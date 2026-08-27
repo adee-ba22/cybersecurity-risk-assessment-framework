@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cybersecurity Risk Assessment Framework | Minor Project 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #071322;
+      --bg-card: #0d1e36;
+      --bg-card-hover: #122847;
+      --border-color: #1e3a5f;
+      --accent-blue: #38bdf8;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --risk-low: #10b981;
+      --risk-mod: #3b82f6;
+      --risk-high: #f59e0b;
+      --risk-critical: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; min-height: 100vh; }
+
+    /* Navigation */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(7, 19, 34, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      height: 70px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; color: #fff; text-decoration: none; }
+    .brand-icon {
+      width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 10px; display: grid; place-items: center; font-size: 1.2rem;
+    }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--accent-blue); }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 5% 60px;
+      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center;
+      background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 50%);
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 20px; background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2); color: var(--accent-blue);
+      font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;
+    }
+    .hero h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent-blue), #a5f3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { color: var(--text-muted); font-size: 1.15rem; margin-bottom: 30px; max-width: 620px; }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem; text-decoration: none; cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #041225; box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(56, 189, 248, 0.45); }
+    .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--accent-blue); }
+
+    .hero-card {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px;
+      padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; overflow: hidden;
+    }
+    .hero-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-emerald), var(--accent-amber), var(--accent-rose));
+    }
+    .author-info { display: flex; flex-direction: column; gap: 6px; }
+    .author-info label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+    .author-info h3 { font-size: 1.2rem; color: var(--text-main); }
+    .author-info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0; }
+
+    /* Sections */
+    .section { padding: 80px 5%; border-top: 1px solid rgba(30, 58, 95, 0.5); }
+    .section-header { text-align: center; max-width: 700px; margin: 0 auto 50px; }
+    .section-header h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; }
+    .section-header p { color: var(--text-muted); font-size: 1.05rem; }
+
+    /* 6-Step Cycle */
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .step-card {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px;
+      padding: 28px; transition: transform 0.2s, border-color 0.2s; position: relative;
+    }
+    .step-card:hover { transform: translateY(-4px); border-color: var(--accent-blue); }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 12px; background: rgba(56, 189, 248, 0.1);
+      color: var(--accent-blue); display: grid; place-items: center; font-weight: 800; font-size: 1.1rem;
+      margin-bottom: 20px; font-family: 'JetBrains Mono', monospace;
+    }
+    .step-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
+    .step-card p { color: var(--text-muted); font-size: 0.92rem; }
+
+    /* Calculator & Matrix Section */
+    .calc-container {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
+    }
+    .calc-box {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 32px;
+    }
+    .form-group { margin-bottom: 24px; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+    .form-group select, .form-group input {
+      width: 100%; padding: 14px; border-radius: 10px; background: #071322;
+      border: 1px solid var(--border-color); color: var(--text-main); font-size: 0.95rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-group select:focus, .form-group input:focus { border-color: var(--accent-blue); }
+    
+    .calc-result-badge {
+      text-align: center; padding: 24px; border-radius: 14px; background: #071322;
+      border: 1px solid var(--border-color); margin-top: 24px;
+    }
+    .calc-result-badge small { color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; font-size: 0.75rem; }
+    .calc-score { font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 8px 0; font-family: 'JetBrains Mono', monospace; }
+    .calc-level { display: inline-block; padding: 4px 16px; border-radius: 20px; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; }
+
+    /* Risk Matrix Table */
+    .matrix-box {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 32px;
+    }
+    .matrix-table { width: 100%; border-collapse: separate; border-spacing: 6px; }
+    .matrix-table th, .matrix-table td {
+      text-align: center; padding: 12px 8px; border-radius: 8px; font-weight: 700; font-size: 0.85rem;
+    }
+    .matrix-table th { background: rgba(255,255,255,0.03); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+    .matrix-cell { transition: all 0.2s; cursor: pointer; border: 2px solid transparent; color: #fff; }
+    .matrix-cell.active-cell { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.4); z-index: 2; }
+    
+    .cell-low { background: rgba(16, 185, 129, 0.25); color: #34d399; }
+    .cell-mod { background: rgba(59, 130, 246, 0.3); color: #60a5fa; }
+    .cell-high { background: rgba(245, 158, 11, 0.35); color: #fbbf24; }
+    .cell-critical { background: rgba(239, 68, 68, 0.4); color: #f87171; }
+
+    /* Case Study Table */
+    .case-study-card {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 32px; overflow-x: auto;
+    }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .data-table th, .data-table td { padding: 16px 20px; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; }
+    .data-table th { background: #071322; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+    
+    .level-tag { display: inline-block; padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+    .tag-low { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .tag-mod { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .tag-high { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .tag-critical { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color); padding: 40px 5%; text-align: center; color: var(--text-dim); font-size: 0.9rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .hero h1 { font-size: 2.4rem; }
+      .calc-container { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-icon">🛡️</div>
+      <span>Cybersecurity Risk Assessment Framework</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#framework">6-Step Framework</a></li>
+      <li><a href="#calculator">Risk Calculator</a></li>
+      <li><a href="#case-study">Case Study</a></li>
+      <li><a href="#mitigation">Mitigation Strategy</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="overview">
+    <div>
+      <div class="badge">Minor Project 1 • 2026</div>
+      <h1>Cybersecurity Risk Assessment <span>for Small Businesses</span></h1>
+      <p>A practical, qualitative & quantitative framework designed to help SMEs identify, score, prioritize, and mitigate cybersecurity threats with resource efficiency.</p>
+      <div class="hero-actions">
+        <a href="#calculator" class="btn btn-primary">Try Calculator 🧮</a>
+        <a href="#framework" class="btn btn-secondary">Explore 6-Step Cycle</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="author-info">
+        <label>Project Author</label>
+        <h3>Adeeba Saleem</h3>
+        <p>Atlas SkillTech University</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6-Step Framework Cycle -->
+  <section class="section" id="framework">
+    <div class="section-header">
+      <div class="badge">Core Methodology</div>
+      <h2>Six-Step Risk Assessment Cycle</h2>
+      <p>Continuous cybersecurity posture management simplified for small & medium organizations.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3>Identify</h3>
+        <p>Inventory critical business assets, sensitive customer data, vulnerabilities, and relevant threat actors.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3>Assess</h3>
+        <p>Estimate threat likelihood (1-5) and potential operational or financial business impact (1-5).</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3>Score Risk</h3>
+        <p>Calculate risk magnitude using the core formula: <strong>Risk Score = Likelihood × Impact</strong>.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <h3>Mitigate</h3>
+        <p>Prioritize high-scoring risks and deploy cost-effective technical and administrative controls.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">05</div>
+        <h3>Respond</h3>
+        <p>Establish emergency response protocols to detect, contain, and quickly recover from incidents.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">06</div>
+        <h3>Review</h3>
+        <p>Periodically re-evaluate security posture, audit control effectiveness, and adapt to new cyber threats.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Calculator & Heatmap -->
+  <section class="section" id="calculator">
+    <div class="section-header">
+      <div class="badge">Interactive Tool</div>
+      <h2>Cyber Risk Calculator & Heatmap Matrix</h2>
+      <p>Select Likelihood and Impact scores to calculate real-time severity levels.</p>
+    </div>
+
+    <div class="calc-container">
+      <!-- Calculator Controls -->
+      <div class="calc-box">
+        <div class="form-group">
+          <label for="calc-likelihood">Threat Likelihood (1 - 5)</label>
+          <select id="calc-likelihood" onchange="calculateScore()">
+            <option value="1">1 — Very Low (Unlikely occurrence)</option>
+            <option value="2">2 — Low (Possible once every few years)</option>
+            <option value="3" selected>3 — Moderate (Occasional industry threat)</option>
+            <option value="4">4 — High (Frequent active target)</option>
+            <option value="5">5 — Very High (Continuous ongoing attacks)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="calc-impact">Business Impact (1 - 5)</label>
+          <select id="calc-impact" onchange="calculateScore()">
+            <option value="1">1 — Very Low (Negligible impact)</option>
+            <option value="2">2 — Low (Minor operational inconvenience)</option>
+            <option value="3">3 — Moderate (Noticeable delay / moderate cost)</option>
+            <option value="4" selected>4 — High (Severe financial/reputational damage)</option>
+            <option value="5">5 — Very High (Catastrophic business disruption)</option>
+          </select>
+        </div>
+
+        <div class="calc-result-badge">
+          <small>Calculated Risk Score</small>
+          <div class="calc-score" id="score-val">12</div>
+          <span class="calc-level" id="level-val">High Risk</span>
+        </div>
+      </div>
+
+      <!-- 5x5 Matrix visual -->
+      <div class="matrix-box">
+        <h3 style="margin-bottom: 16px; font-size: 1.1rem;">5×5 Cybersecurity Risk Matrix</h3>
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>Imp \ Lik</th>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+            </tr>
+          </thead>
+          <tbody id="matrix-body">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Study -->
+  <section class="section" id="case-study">
+    <div class="section-header">
+      <div class="badge">Retail SME Example</div>
+      <h2>Case Study Analysis</h2>
+      <p>Assessment performed for a retail business (15 employees, e-commerce & payment gateways).</p>
+    </div>
+
+    <div class="case-study-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Threat Vector</th>
+            <th>Likelihood (L)</th>
+            <th>Impact (I)</th>
+            <th>Risk Score (L × I)</th>
+            <th>Severity Level</th>
+            <th>Recommended Mitigation Control</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Phishing Attacks</strong></td>
+            <td>4</td>
+            <td>4</td>
+            <td><strong>16</strong></td>
+            <td><span class="level-tag tag-high">High</span></td>
+            <td>Email Filtering + Security Awareness Training</td>
+          </tr>
+          <tr>
+            <td><strong>Ransomware Infection</strong></td>
+            <td>3</td>
+            <td>5</td>
+            <td><strong>15</strong></td>
+            <td><span class="level-tag tag-high">High</span></td>
+            <td>Offline Immutable Backups + EDR Endpoint Security</td>
+          </tr>
+          <tr>
+            <td><strong>Weak / Reused Passwords</strong></td>
+            <td>4</td>
+            <td>3</td>
+            <td><strong>12</strong></td>
+            <td><span class="level-tag tag-high">High</span></td>
+            <td>Mandatory Multi-Factor Authentication (MFA) + Password Manager</td>
+          </tr>
+          <tr>
+            <td><strong>Customer Data Breach</strong></td>
+            <td>2</td>
+            <td>5</td>
+            <td><strong>10</strong></td>
+            <td><span class="level-tag tag-high">High</span></td>
+            <td>AES-256 Encryption at Rest & In-Transit + Least Privilege Access</td>
+          </tr>
+          <tr>
+            <td><strong>Insider Misuse / Negligence</strong></td>
+            <td>2</td>
+            <td>3</td>
+            <td><strong>6</strong></td>
+            <td><span class="level-tag tag-mod">Moderate</span></td>
+            <td>Role-Based Access Control (RBAC) + Audit Logging</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Cybersecurity Risk Assessment Framework for Small Businesses</p>
+    <p>© 2026 Academic Minor Project • Adeeba Saleem • Atlas SkillTech University</p>
+  </footer>
+
+  <script>
+    function getLevelInfo(score) {
+      if (score <= 4) return { text: "Low Risk", class: "tag-low", bg: "#10b981", cellClass: "cell-low" };
+      if (score <= 9) return { text: "Moderate Risk", class: "tag-mod", bg: "#3b82f6", cellClass: "cell-mod" };
+      if (score <= 16) return { text: "High Risk", class: "tag-high", bg: "#f59e0b", cellClass: "cell-high" };
+      return { text: "Critical Risk", class: "tag-critical", bg: "#ef4444", cellClass: "cell-critical" };
+    }
+
+    function renderMatrix() {
+      const tbody = document.getElementById("matrix-body");
+      tbody.innerHTML = "";
+      
+      const currentL = parseInt(document.getElementById("calc-likelihood").value);
+      const currentI = parseInt(document.getElementById("calc-impact").value);
+
+      for (let impIdx = 0; impIdx < 5; impIdx++) {
+        const impactVal = 5 - impIdx;
+        const tr = document.createElement("tr");
+        
+        const th = document.createElement("th");
+        th.textContent = impactVal;
+        tr.appendChild(th);
+
+        for (let likIdx = 0; likIdx < 5; likIdx++) {
+          const likVal = likIdx + 1;
+          const score = impactVal * likVal;
+          const info = getLevelInfo(score);
+          
+          const td = document.createElement("td");
+          td.className = `matrix-cell ${info.cellClass}`;
+          td.textContent = score;
+
+          if (impactVal === currentI && likVal === currentL) {
+            td.classList.add("active-cell");
+          }
+
+          td.onclick = () => {
+            document.getElementById("calc-likelihood").value = likVal;
+            document.getElementById("calc-impact").value = impactVal;
+            calculateScore();
+          };
+
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+    }
+
+    function calculateScore() {
+      const lik = parseInt(document.getElementById("calc-likelihood").value);
+      const imp = parseInt(document.getElementById("calc-impact").value);
+      const score = lik * imp;
+      const info = getLevelInfo(score);
+
+      document.getElementById("score-val").textContent = score;
+      const levelEl = document.getElementById("level-val");
+      levelEl.textContent = info.text;
+      levelEl.style.backgroundColor = info.bg + "25";
+      levelEl.style.color = info.bg;
+
+      renderMatrix();
+    }
+
+    // Initialize
+    calculateScore();
+  </script>
+</body>
+</html>
